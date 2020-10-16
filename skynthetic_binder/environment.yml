@@ -1,4 +1,4 @@
-name: sketchthetic
+name: skynthetic
 channels:
   - conda-forge
 dependencies:

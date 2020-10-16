@@ -21,7 +21,7 @@ def go(image, frequency, file_name = None):
 
     ### Load image fill and plot ###
 
-    fig, ax = plt.subplots(figsize = (10, 8), nrows = 2)
+    fig, ax = plt.subplots(figsize = (12, 10), nrows = 2)
     channel = np.asarray(Image.open(image))
     ax[0].imshow(channel, aspect= 'auto')
     ax[0].axes.xaxis.set_ticklabels([])
@@ -72,10 +72,9 @@ def go(image, frequency, file_name = None):
 
     ### Calculate acoustic impedance ###
     
-    print("Building sketchthetic...")
+    print("Building skynthetic...")
     imp = np.apply_along_axis(np.product, -1, earth)
     print("Done")
-    
     rc = np.diff(imp, axis=0)
 
     ### Create wavelet and convolve with image ###

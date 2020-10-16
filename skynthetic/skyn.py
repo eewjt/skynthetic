@@ -3,6 +3,7 @@ import numpy as np
 import bruges
 import collections
 from matplotlib import colors
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 from PIL import Image
 
 def go(image, frequency, file_name = None):
@@ -21,7 +22,7 @@ def go(image, frequency, file_name = None):
 
     ### Load image fill and plot ###
 
-    fig, ax = plt.subplots(figsize = (12, 10), nrows = 2)
+    fig, ax = plt.subplots(figsize = (10, 8), nrows = 2)
     channel = np.asarray(Image.open(image))
     ax[0].imshow(channel, aspect= 'auto')
     ax[0].axes.xaxis.set_ticklabels([])
@@ -72,9 +73,10 @@ def go(image, frequency, file_name = None):
 
     ### Calculate acoustic impedance ###
     
-    print("Building sketchthetic...")
+    print("Building skynthetic...")
     imp = np.apply_along_axis(np.product, -1, earth)
     print("Done")
+    
     rc = np.diff(imp, axis=0)
 
     ### Create wavelet and convolve with image ###
@@ -84,7 +86,10 @@ def go(image, frequency, file_name = None):
 
     ### Plot ###
 
-    ax[1].imshow(synth, cmap = "RdBu", aspect = 'auto', vmin = -1e6, vmax = 1e6)
+    im = ax[1].imshow(synth, cmap = "RdBu", aspect = 'auto', vmin = -1e6, vmax = 1e6)
+    divider = make_axes_locatable(ax[1])
+    cax = divider.append_axes('bottom', size='5%', pad=0.05)
+    fig.colorbar(im, cax = cax, orientation = 'horizontal')
     ax[1].axes.xaxis.set_ticklabels([])
     ax[1].axes.yaxis.set_ticklabels([])
     ax[1].axes.xaxis.set_ticks([])
