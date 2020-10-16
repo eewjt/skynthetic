@@ -54,12 +54,6 @@ def go(image, frequency, file_name = None):
 
     ### Assign sonic and density values [Vp, rho] ###
 
-#     zero = [2700, 2750]
-#     one = [3100, 3150] 
-#     two = [2200, 2250]
-#     three = [2800, 3000]
-#     four = [2100, 2150]
-
     zero = [2200, 2250]
     one = [2300, 2350] 
     two = [2400, 2450]
@@ -89,7 +83,9 @@ def go(image, frequency, file_name = None):
     im = ax[1].imshow(synth, cmap = "RdBu", aspect = 'auto', vmin = -1e6, vmax = 1e6)
     divider = make_axes_locatable(ax[1])
     cax = divider.append_axes('bottom', size='5%', pad=0.05)
-    fig.colorbar(im, cax = cax, orientation = 'horizontal')
+    cbar = fig.colorbar(im, cax = cax, orientation = 'horizontal')
+    cbar.set_ticks([-1e6, -0.5e6, 0, 0.5e6, 1e6])
+    cbar.set_label('amplitude')
     ax[1].axes.xaxis.set_ticklabels([])
     ax[1].axes.yaxis.set_ticklabels([])
     ax[1].axes.xaxis.set_ticks([])
