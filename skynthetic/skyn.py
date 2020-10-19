@@ -5,18 +5,20 @@ import collections
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from PIL import Image
 
-def go(image, frequency, amp_min = -1e6, amp_max = 1e6, file_name = None):
+def go(sketch, frequency, amp_min = -1e6, amp_max = 1e6, output_name = None):
     
     """Make synthetic seismic section from image
 
     Parameters:
-    image: path to image
-    frequency: centre frequency of the wavelet [Hz]. Note that this is the relative frequency because the images are not scaled.
-    amp_min: minimum amplitude for colorbar. Default is -1e6.
-    amp_max: maximum amplitude for colorbar. Default is 1e6.
-    file_name: path to saved image (default is not to save the image)
+    
+    sketch: Path to sketch. Include extension (e.g. .png, .jpeg, .tiff). Try to resize image to 96 dpi for better results.
+    frequency: Centre frequency of the wavelet [Hz]. Note that this is the relative frequency because the images are not scaled.
+    amp_min: Minimum amplitude for colorbar. Default is -1e6.
+    amp_max: Maximum amplitude for colorbar. Default is 1e6.
+    output_name: Saves output image in figures folder (default is not to save the image).
 
     Returns:
+    
     jpg of synthetic seismic section
 
     """
@@ -24,8 +26,8 @@ def go(image, frequency, amp_min = -1e6, amp_max = 1e6, file_name = None):
     ### Load image fill and plot ###
 
     fig, ax = plt.subplots(figsize = (10, 8), nrows = 2)
-    sketch = np.asarray(Image.open(image))
-    print("Image loaded...")
+    sketch = np.asarray(Image.open(sketch))
+    print("Sketch loaded...")
     ax[0].imshow(sketch, aspect= 'auto')
     ax[0].axes.xaxis.set_ticklabels([])
     ax[0].axes.yaxis.set_ticklabels([])
@@ -100,6 +102,6 @@ def go(image, frequency, amp_min = -1e6, amp_max = 1e6, file_name = None):
 
     plt.tight_layout()
     
-    if file_name is not None:
+    if output_name is not None:
         
-        plt.savefig('figures/{}.jpg'.format(file_name), bbox_inches = 'tight', dpi = 96)
+        plt.savefig('figures/{}.jpg'.format(output_name), bbox_inches = 'tight', dpi = 96)
