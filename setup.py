@@ -13,6 +13,6 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/eslrgs/skynthetic.git",
     packages=['skynthetic'],  #same as name
-    install_requires=['matplotlib==3.2.2', 'bruges==0.3.4', 
+    install_requires=['matplotlib==3.2.2', 'bruges', 
     'numpy==1.18.5', 'Pillow==8.0.0', 'IPython', 'jupyter==1.0.0'] #external packages as dependencies
 )
