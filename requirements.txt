@@ -1,0 +1,6 @@
+matplotlib==3.2.2
+bruges==0.3.4
+numpy==1.18.5
+Pillow==8.0.0
+IPython
+jupyter==1.0.0

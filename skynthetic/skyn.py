@@ -6,13 +6,15 @@ from matplotlib import colors
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from PIL import Image
 
-def go(image, frequency, file_name = None):
+def go(image, frequency, amp_min = -1e6, amp_max = 1e6, file_name = None):
     
     """Make synthetic seismic section from image
 
     Parameters:
     image: path to image
-    frequency: centre frequency of the wavelet [Hz]
+    frequency: centre frequency of the wavelet [Hz]. Note that this is the relative frequency because the images are not scaled.
+    amp_min: minimum amplitude for colorbar. Default is -1e6.
+    amp_max: maximum amplitude for colorbar. Default is 1e6.
     file_name: path to saved image (default is not to save the image)
 
     Returns:
@@ -23,8 +25,9 @@ def go(image, frequency, file_name = None):
     ### Load image fill and plot ###
 
     fig, ax = plt.subplots(figsize = (10, 8), nrows = 2)
-    channel = np.asarray(Image.open(image))
-    ax[0].imshow(channel, aspect= 'auto')
+    sketch = np.asarray(Image.open(image))
+    print("Image loaded...")
+    ax[0].imshow(sketch, aspect= 'auto')
     ax[0].axes.xaxis.set_ticklabels([])
     ax[0].axes.yaxis.set_ticklabels([])
     ax[0].axes.xaxis.set_ticks([])
@@ -32,13 +35,13 @@ def go(image, frequency, file_name = None):
 
     ### Resize image ###
 
-    x = channel.shape[0] 
-    y = channel.shape[1] * channel.shape[2] 
-    channel.resize((x,y))
+    x = sketch.shape[0] 
+    y = sketch.shape[1] * sketch.shape[2] 
+    sketch.resize((x,y))
 
     ### Find most frequent image array values and sort ###
 
-    flattened = channel.flatten()
+    flattened = sketch.flatten()
     counted = collections.Counter(flattened)
     counted = {k: v for k, v in sorted(counted.items(), key = lambda item: item[1], reverse = True)}
     keys = np.array(list(counted.keys()))
@@ -46,11 +49,11 @@ def go(image, frequency, file_name = None):
 
     ### Collapse image array by most frequent values and assign single values ###
 
-    channel = np.where((channel > 0) & (channel <= (keys[1])), 1, channel)
-    channel = np.where((channel > keys[1]) & (channel <= keys[2]), 2, channel)
-    channel = np.where((channel > keys[2]) & (channel <= keys[3]), 3, channel)
-    channel = np.where((channel > keys[3]) & (channel <= keys[4]), 4, channel)
-    channel = np.where((channel > keys[4]), 5, channel)
+    sketch = np.where((sketch > 0) & (sketch <= (keys[1])), 1, sketch)
+    sketch = np.where((sketch > keys[1]) & (sketch <= keys[2]), 2, sketch)
+    sketch = np.where((sketch > keys[2]) & (sketch <= keys[3]), 3, sketch)
+    sketch = np.where((sketch > keys[3]) & (sketch <= keys[4]), 4, sketch)
+    sketch = np.where((sketch > keys[4]), 5, sketch)
 
     ### Assign sonic and density values [Vp, rho] ###
 
@@ -59,32 +62,37 @@ def go(image, frequency, file_name = None):
     two = [2400, 2450]
     three = [2500, 2550]
     four = [2600, 2650]
+    
+    zero = [2300, 2250]
+    one = [2400, 2350] 
+    two = [2500, 2450]
+    three = [2600, 2550]
+    four = [2700, 2650]
 
     ### Make array of "rocks" and index into image array ###
 
-    rocks = np.array([zero, one, two, three, four])
-    earth = rocks[channel]
+    layers = np.array([zero, one, two, three, four])
+    model = layers[sketch]
 
     ### Calculate acoustic impedance ###
     
     print("Building skynthetic...")
-    imp = np.apply_along_axis(np.product, -1, earth)
+    impedance = np.apply_along_axis(np.product, -1, model)
     print("Done")
-    
-    rc = np.diff(imp, axis=0)
+    ref_coeff = np.diff(impedance, axis=0)
 
     ### Create wavelet and convolve with image ###
 
     w = bruges.filters.ricker(duration = 0.1, dt = 0.001, f = frequency)
-    synth = np.apply_along_axis(lambda t: np.convolve(t, w, mode = 'same'), axis = 0, arr = rc)
+    synth = np.apply_along_axis(lambda t: np.convolve(t, w, mode = 'same'), axis = 0, arr = ref_coeff)
 
     ### Plot ###
 
-    im = ax[1].imshow(synth, cmap = "RdBu", aspect = 'auto', vmin = -1e6, vmax = 1e6)
+    im = ax[1].imshow(synth, cmap = "RdBu", aspect = 'auto', vmin = amp_min, vmax = amp_max)
     divider = make_axes_locatable(ax[1])
-    cax = divider.append_axes('bottom', size='5%', pad=0.05)
+    cax = divider.append_axes('bottom', size = '5%', pad = 0.05)
     cbar = fig.colorbar(im, cax = cax, orientation = 'horizontal')
-    cbar.set_ticks([-1e6, -0.5e6, 0, 0.5e6, 1e6])
+    cbar.set_ticks([amp_min, amp_min/2, 0, amp_max/2, amp_max])
     cbar.set_label('amplitude')
     ax[1].axes.xaxis.set_ticklabels([])
     ax[1].axes.yaxis.set_ticklabels([])
