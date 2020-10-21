@@ -2,8 +2,24 @@ import matplotlib.pyplot as plt
 import numpy as np
 import bruges
 import collections
+import ipywidgets as widgets
+import io
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from PIL import Image
+
+def upload():
+    
+    uploader = widgets.FileUpload()
+    display(uploader)
+    return uploader
+    
+def prepare(sketch):
+    
+    for name, file_info in sketch.value.items():
+    
+        img = Image.open(io.BytesIO(file_info['content']))
+        
+        return img
 
 def go(sketch, frequency, amp_min = -1e6, amp_max = 1e6, output_name = None):
     
@@ -26,7 +42,8 @@ def go(sketch, frequency, amp_min = -1e6, amp_max = 1e6, output_name = None):
     ### Load image fill and plot ###
 
     fig, ax = plt.subplots(figsize = (10, 8), nrows = 2)
-    sketch = np.asarray(Image.open(sketch))
+#     sketch = np.asarray(Image.open(sketch))
+    sketch = np.asarray(sketch)
     print("Sketch loaded...")
     ax[0].imshow(sketch, aspect= 'auto')
     ax[0].axes.xaxis.set_ticklabels([])
