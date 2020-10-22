@@ -14,5 +14,6 @@ setuptools.setup(
     url="https://github.com/eslrgs/skynthetic.git",
     packages=['skynthetic'],  #same as name
     install_requires=['matplotlib==3.2.2', 'bruges', 
-    'numpy==1.18.5', 'Pillow==8.0.0', 'IPython', 'jupyter==1.0.0'] #external packages as dependencies
+    'numpy==1.18.5', 'Pillow==8.0.0', 'IPython', 'jupyter==1.0.0', 
+                      'ipywidgets'] #external packages as dependencies
 )
