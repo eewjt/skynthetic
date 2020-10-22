@@ -9,17 +9,21 @@ from PIL import Image
 
 def upload():
     
+    """ Run to display upload widget, the upload local sketch image (e.g. .png, .jpeg, .tiff) to notebook with widget.
+    """
+    ### Open widget and return file ###
+    
     uploader = widgets.FileUpload()
     display(uploader)
     return uploader
     
 def go(sketch, frequency, amp_min = -1e6, amp_max = 1e6, output_name = None):
     
-    """Make synthetic seismic section from image
+    """Make synthetic seismic section from image. Inspired by Agile Geoscience blog post: https://agilescientific.com/blog/2016/9/15/x-lines-of-python-synthetic-wedge-model
 
     Parameters:
     
-    sketch: Path to sketch. Include extension (e.g. .png, .jpeg, .tiff). Try to resize image to 96 dpi for better results.
+    sketch: uploaded image assigned at upload()
     frequency: Centre frequency of the wavelet [Hz]. Note that this is the relative frequency because the images are not scaled.
     amp_min: Minimum amplitude for colorbar. Default is -1e6.
     amp_max: Maximum amplitude for colorbar. Default is 1e6.
@@ -27,7 +31,7 @@ def go(sketch, frequency, amp_min = -1e6, amp_max = 1e6, output_name = None):
 
     Returns:
     
-    jpg of synthetic seismic section
+    jpg of original sketch and its synthetic seismic section
 
     """  
 
