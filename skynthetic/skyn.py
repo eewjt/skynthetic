@@ -75,12 +75,6 @@ def go(sketch, frequency, amp_min = -1e6, amp_max = 1e6, output_name = None):
 
         ### Assign sonic and density values [Vp, rho] ###
 
-        zero = [2200, 2250]
-        one = [2300, 2350] 
-        two = [2400, 2450]
-        three = [2500, 2550]
-        four = [2600, 2650]
-
         zero = [2300, 2250]
         one = [2400, 2350] 
         two = [2500, 2450]
